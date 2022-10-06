@@ -21,7 +21,6 @@ io.on('connection', socket => {
 
         socket.join(user.room);
 
-        socket.join()
         // welcome the current user
         socket.emit('user-notifications', 
                 `...Welcome to the  ||noise.cord||  ${user.room} chat...`);
@@ -29,6 +28,12 @@ io.on('connection', socket => {
         // broadcast user connection to other users
         socket.broadcast.to(user.room).emit('user-notifications', 
                 `...${user.username} has joined the ${user.room} chat...`);
+
+        // sending  users and room info
+        io.to(user.room).emit('roomUsers', {
+            room: user.room,
+            users: getRoomUsers(user.room)
+        });
     });
 
     // Listen for chat messages
@@ -45,6 +50,12 @@ io.on('connection', socket => {
         if(user){
             io.to(user.room).emit('user-notifications', 
                 `...${user.username} has left the ${user.room} chat...`);
+
+            // sending  users and room info
+            io.to(user.room).emit('roomUsers', {
+                room: user.room,
+                users: getRoomUsers(user.room)
+            });
         }
     });
 });
