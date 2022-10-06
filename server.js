@@ -40,10 +40,12 @@ io.on('connection', socket => {
 
     // running when a user disconnects
     socket.on('disconnect', () => {
-        const user = getCurrentUser(socket.id);
+        const user = userLeaves(socket.id);
 
-        io.to(user.room).emit('user-notifications', 
+        if(user){
+            io.to(user.room).emit('user-notifications', 
                 `...${user.username} has left the ${user.room} chat...`);
+        }
     });
 });
 
